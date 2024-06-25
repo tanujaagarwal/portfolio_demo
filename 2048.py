@@ -10,8 +10,28 @@ class Game2048:
         self.frame.pack(fill="both", expand=True)
         self.grid = [[0]*4 for _ in range(4)]
         self.score = 0
+        self.create_menu()
+
+    def create_menu(self):
+        self.menu_frame = tk.Frame(self.window, bg="azure3")
+        self.menu_frame.pack(fill="both", expand=True)
+
+        self.play_button = tk.Button(self.menu_frame, text="Play", font=("Arial", 20), command=self.start_game, bg="green", fg="white")
+        self.play_button.pack(fill="x")
+
+        self.settings_button = tk.Button(self.menu_frame, text="Settings", font=("Arial", 20), command=self.settings, bg="blue", fg="white")
+        self.settings_button.pack(fill="x")
+
+        self.exit_button = tk.Button(self.menu_frame, text="Exit", font=("Arial", 20), command=self.window.destroy, bg="red", fg="white")
+        self.exit_button.pack(fill="x")
+
+    def start_game(self):
+        self.menu_frame.destroy()
         self.create_widgets()
         self.new_game()
+
+    def settings(self):
+        print("Settings button clicked")
 
     def create_widgets(self):
         self.buttons = []
@@ -26,7 +46,7 @@ class Game2048:
         self.score_label = tk.Label(self.frame, text="Score: 0", font=("Arial", 20), bg="azure3")
         self.score_label.grid(row=4, column=0, columnspan=4)
 
-        self.restart_button = tk.Button(self.frame, text="Restart", font=("Arial", 20), command=self.new_game)
+        self.restart_button = tk.Button(self.frame, text="Restart", font=("Arial", 20), command=self.new_game, bg="orange", fg="white")
         self.restart_button.grid(row=5, column=0, columnspan=4)
 
     def new_game(self):
@@ -67,28 +87,28 @@ class Game2048:
             self.score_label['text'] = "Game Over! Score: " + str(self.score)
 
     def click(self, i, j):
-        if self.grid[i][j]!= 0:
-            if i > 0 and self.grid[i-1][j] == self.grid[i][j]:
-                self.grid[i-1][j] *= 2
-                self.grid[i][j] = 0
-                self.score += self.grid[i-1][j]
-            elif j > 0 and self.grid[i][j-1] == self.grid[i][j]:
-                self.grid[i][j-1] *= 2
-                self.grid[i][j] = 0
-                self.score += self.grid[i][j-1]
-            elif i < 3 and self.grid[i+1][j] == self.grid[i][j]:
-                self.grid[i+1][j] *= 2
-                self.grid[i][j] = 0
-                self.score += self.grid[i+1][j]
-            elif j < 3 and self.grid[i][j+1] == self.grid[i][j]:
-                self.grid[i][j+1] *= 2
-                self.grid[i][j] = 0
-                self.score += self.grid[i][j+1]
-        self.score_label['text'] = "Score: " + str(self.score)
-        self.update_grid()
-        if not self.is_game_over():
-            self.add_tile()
+     if self.grid[i][j] != 0:
+        if i > 0 and self.grid[i-1][j] == self.grid[i][j]:
+            self.grid[i-1][j] *= 2
+            self.grid[i][j] = 0
+            self.score += self.grid[i-1][j]
+        elif j > 0 and self.grid[i][j-1] == self.grid[i][j]:
+            self.grid[i][j-1] *= 2
+            self.grid[i][j] = 0
+            self.score += self.grid[i][j-1]
+        elif i < 3 and self.grid[i+1][j] == self.grid[i][j]:
+            self.grid[i+1][j] *= 2
+            self.grid[i][j] = 0
+            self.score += self.grid[i+1][j]
+        elif j < 3 and self.grid[i][j+1] == self.grid[i][j]:
+            self.grid[i][j+1] *= 2
+            self.grid[i][j] = 0
+            self.score += self.grid[i][j+1]
+            self.score_label['text'] = "Score: " + str(self.score)
             self.update_grid()
+        if not self.is_game_over():
+             self.add_tile()
+        self.update_grid()
 
     def is_game_over(self):
         for i in range(4):
