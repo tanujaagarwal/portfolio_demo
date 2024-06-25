@@ -26,6 +26,9 @@ class Game2048:
         self.score_label = tk.Label(self.frame, text="Score: 0", font=("Arial", 20), bg="azure3")
         self.score_label.grid(row=4, column=0, columnspan=4)
 
+        self.restart_button = tk.Button(self.frame, text="Restart", font=("Arial", 20), command=self.new_game)
+        self.restart_button.grid(row=5, column=0, columnspan=4)
+
     def new_game(self):
         self.score = 0
         self.score_label['text'] = "Score: 0"
@@ -46,8 +49,22 @@ class Game2048:
             for j in range(4):
                 if self.grid[i][j] == 0:
                     self.buttons[i][j]['text'] = ""
+                    self.buttons[i][j]['bg'] = "azure2"
                 else:
                     self.buttons[i][j]['text'] = str(self.grid[i][j])
+                    if self.grid[i][j] < 8:
+                        self.buttons[i][j]['bg'] = "azure2"
+                    elif self.grid[i][j] < 128:
+                        self.buttons[i][j]['bg'] = "lightgreen"
+                    elif self.grid[i][j] < 512:
+                        self.buttons[i][j]['bg'] = "green"
+                    elif self.grid[i][j] < 2048:
+                        self.buttons[i][j]['bg'] = "darkgreen"
+                    else:
+                        self.buttons[i][j]['bg'] = "black"
+
+        if self.is_game_over():
+            self.score_label['text'] = "Game Over! Score: " + str(self.score)
 
     def click(self, i, j):
         if self.grid[i][j]!= 0:
@@ -69,8 +86,24 @@ class Game2048:
                 self.score += self.grid[i][j+1]
         self.score_label['text'] = "Score: " + str(self.score)
         self.update_grid()
-        self.add_tile()
-        self.update_grid()
+        if not self.is_game_over():
+            self.add_tile()
+            self.update_grid()
+
+    def is_game_over(self):
+        for i in range(4):
+            for j in range(4):
+                if self.grid[i][j] == 0:
+                    return False
+                if i > 0 and self.grid[i-1][j] == self.grid[i][j]:
+                    return False
+                if j > 0 and self.grid[i][j-1] == self.grid[i][j]:
+                    return False
+                if i <3 and self.grid[i+1][j] == self.grid[i][j]:
+                    return False
+                if j < 3 and self.grid[i][j+1] == self.grid[i][j]:
+                    return False
+        return True
 
     def run(self):
         self.window.mainloop()
